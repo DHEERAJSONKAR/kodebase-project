@@ -25,7 +25,7 @@ const Login = () => {
     }
   };
 
-  // Add Google login handler
+  // Update the Google login handler to use the new OAuth library
   const handleGoogleLogin = () => {
     try {
       console.log("Redirecting to Google auth from Login...");

@@ -5,12 +5,10 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // Ensure that vite handles client-side routing correctly
   server: {
     host: true,
     port: 3000
   },
-  // Fix Vercel 404 errors on page refresh with SPA
   build: {
     outDir: 'dist',
     sourcemap: true,
@@ -20,4 +18,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // Add this to help with dependency resolution
+  optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        global: 'globalThis'
+      }
+    }
+  }
 })
