@@ -289,6 +289,8 @@ public class ${className} {
         }
       }
 
+      console.log("Sending execution request for language:", languageToUse);
+      
       const response = await fetch("https://emkc.org/api/v2/piston/execute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -299,18 +301,32 @@ public class ${className} {
             filename: filename,
             content: codeContent
           }],
-          stdin: "", // Add stdin support
+          stdin: userInput || "", // Use userInput if available
           args: [] // Add command line args support
         })
       });
 
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+
       setLoadingState({ status: 'Processing output...', progress: 75 });
       const result = await response.json();
+      console.log("Execution result:", result);
+      
+      if (!result || !result.run) {
+        throw new Error('Invalid response format from execution service');
+      }
       
       // Separate stdout and stderr
       let formattedOutput = [];
       let errorOutput = [];
-      let hasError = result.run.code !== 0;
+      let hasError = false;
+      
+      // Check run status
+      if (result.run.code !== 0) {
+        hasError = true;
+      }
       
       // Process stdout if exists
       if (result.run.stdout) {
@@ -331,8 +347,26 @@ public class ${className} {
         hasError = true;
       }
       
+      // Handle case where neither stdout nor stderr, but there's output
+      if (formattedOutput.length === 0 && errorOutput.length === 0 && result.run.output) {
+        formattedOutput = [{
+          line: 1,
+          content: result.run.output,
+          type: 'output'
+        }];
+      }
+      
       // Combine outputs, showing stderr after stdout
       const combinedOutput = [...formattedOutput, ...errorOutput];
+      
+      if (combinedOutput.length === 0) {
+        // If no output at all, provide a default message
+        combinedOutput.push({
+          line: 1,
+          content: 'Program executed successfully with no output',
+          type: 'output'
+        });
+      }
       
       if (hasError) {
         setExecutionSteps(prev => ({ ...prev, running: false, failed: true }));
@@ -356,14 +390,11 @@ public class ${className} {
         });
       }
 
-      // Always show output regardless of error
-      setOutput(combinedOutput.length > 0 ? combinedOutput : [{
-        line: 1,
-        content: result.run.output || 'No output',
-        type: hasError ? 'error' : 'output'
-      }]);
+      // Always set output
+      setOutput(combinedOutput);
 
     } catch (err) {
+      console.error("Execution error:", err);
       setExecutionSteps(prev => ({ ...prev, running: false, failed: true }));
       setError(true);
       toast.error('Execution failed: ' + (err.message || 'Unknown error'), {
@@ -418,8 +449,8 @@ public class ${className} {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        language: data?.projLanguage || 'python',
-        version: data?.version || '3.9.0',
+        language: languageToUse,
+        version: data?.version || 'latest',
         files: [{
           filename: `${projectName}.${getFileExtension(languageToUse)}`,
           content: codeToRun
@@ -428,15 +459,41 @@ public class ${className} {
     })
     .then(res => res.json())
     .then(data => {
-      setOutput(data.run.output || 'No output');
-      setError(data.run.code === 1);
-      if (data.run.code === 1) {
-        toast.error('Execution failed');
+      console.log("Selected code execution result:", data);
+      
+      if (!data || !data.run) {
+        throw new Error('Invalid response format');
       }
+      
+      const hasError = data.run.code !== 0;
+      let outputContent = data.run.stdout || data.run.output || 'No output';
+      
+      if (data.run.stderr) {
+        outputContent = data.run.stderr;
+        setError(true);
+        toast.error('Execution failed: ' + data.run.stderr.split('\n')[0]);
+      } else if (hasError) {
+        setError(true);
+        toast.error('Execution failed with code ' + data.run.code);
+      } else {
+        toast.success('Code executed successfully!');
+      }
+      
+      setOutput([{
+        line: 1,
+        content: outputContent,
+        type: hasError ? 'error' : 'output'
+      }]);
     })
     .catch(err => {
-      toast.error('Failed to run code');
+      console.error("Selected code execution error:", err);
+      toast.error('Failed to run code: ' + (err.message || 'Unknown error'));
       setError(true);
+      setOutput([{
+        line: 1,
+        content: `Error: ${err.message || 'Failed to execute code'}`,
+        type: 'error'
+      }]);
     })
     .finally(() => {
       setIsRunning(false);

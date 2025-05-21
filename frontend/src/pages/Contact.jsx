@@ -3,18 +3,18 @@ import emailjs from '@emailjs/browser';
 import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import { FaGithub, FaLinkedin, FaInstagram, FaPhone, FaMapMarkerAlt, FaCode, FaArrowLeft } from 'react-icons/fa';
-import dkphoto from '../assets/dkphoto.ico'; // Add this import - you'll need to add your image
+import dkphoto from '../assets/dkphoto.ico';
 import { useNavigate } from 'react-router-dom';
 
 // Initialize EmailJS
-emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your public key
+emailjs.init("pYY61skb2VjjjNtdt"); // Using the public key directly here
 
 const Contact = () => {
   const form = useRef();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    user_name: '',  // Changed to match EmailJS template parameters
+    user_email: '', // Changed to match EmailJS template parameters
     message: ''
   });
   const navigate = useNavigate();
@@ -57,21 +57,46 @@ const Contact = () => {
     }
   ];
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    // Validate form data
+    if (!formData.user_name || !formData.user_email || !formData.message) {
+      toast.error('Please fill in all fields');
+      setLoading(false);
+      return;
+    }
+
     try {
+      console.log('Sending form data:', formData);
+      
+      // Use EmailJS to send the form
       const result = await emailjs.sendForm(
-        'service_9i4i9vg', // Replace with your service ID
-        'template_7d8yzq5', // Replace with your template ID
+        'service_9i4i9vg',    // Your EmailJS service ID
+        'template_7d8yzq5',    // Your EmailJS template ID
         form.current,
-        'pYY61skb2VjjjNtdt' // Replace with your public key
+        'pYY61skb2VjjjNtdt'   // Your EmailJS public key
       );
+
+      console.log('EmailJS response:', result);
 
       if (result.text === 'OK') {
         toast.success('Message sent successfully!');
-        form.current.reset();
+        // Reset form data
+        setFormData({
+          user_name: '',
+          user_email: '',
+          message: ''
+        });
       } else {
         throw new Error('Failed to send message');
       }
@@ -165,34 +190,43 @@ const Contact = () => {
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
                 <div className="relative bg-[#1a1a2e]/90 p-4 md:p-8 rounded-xl border border-gray-800/50">
                   <form ref={form} onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
-                    {/* Form fields with improved mobile styling */}
+                    {/* Form fields with improved mobile styling and name attributes */}
                     <div>
-                      <label className="text-gray-300 text-xs md:text-sm font-medium mb-1 md:mb-2 block">Name</label>
+                      <label htmlFor="user_name" className="text-gray-300 text-xs md:text-sm font-medium mb-1 md:mb-2 block">Name</label>
                       <input
+                        id="user_name"
+                        name="user_name" // Important: This must match EmailJS template parameter
                         type="text"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        value={formData.user_name}
+                        onChange={handleChange}
                         className="w-full px-3 md:px-4 py-2 md:py-3 text-sm md:text-base bg-black/50 border border-gray-800 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
+                        placeholder="Your name"
                         required
                       />
                     </div>
                     <div>
-                      <label className="text-gray-300 text-xs md:text-sm font-medium mb-1 md:mb-2 block">Email</label>
+                      <label htmlFor="user_email" className="text-gray-300 text-xs md:text-sm font-medium mb-1 md:mb-2 block">Email</label>
                       <input
+                        id="user_email"
+                        name="user_email" // Important: This must match EmailJS template parameter
                         type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        value={formData.user_email}
+                        onChange={handleChange}
                         className="w-full px-3 md:px-4 py-2 md:py-3 text-sm md:text-base bg-black/50 border border-gray-800 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
+                        placeholder="your.email@example.com"
                         required
                       />
                     </div>
                     <div>
-                      <label className="text-gray-300 text-xs md:text-sm font-medium mb-1 md:mb-2 block">Message</label>
+                      <label htmlFor="message" className="text-gray-300 text-xs md:text-sm font-medium mb-1 md:mb-2 block">Message</label>
                       <textarea
+                        id="message"
+                        name="message" // Important: This must match EmailJS template parameter
                         value={formData.message}
-                        onChange={(e) => setFormData({...formData, message: e.target.value})}
+                        onChange={handleChange}
                         rows="4"
                         className="w-full px-3 md:px-4 py-2 md:py-3 text-sm md:text-base bg-black/50 border border-gray-800 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
+                        placeholder="Type your message here..."
                         required
                       ></textarea>
                     </div>

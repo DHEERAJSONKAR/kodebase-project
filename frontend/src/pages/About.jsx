@@ -409,7 +409,7 @@ const About = () => {
               {[
                 {
                   role: "Front-end Developer",
-                  skills: [ "Himanshu kumar"]
+                  skills: [ "Director Dheeraj "]
                 },
                 {
                   role: "Back-end Developer",
