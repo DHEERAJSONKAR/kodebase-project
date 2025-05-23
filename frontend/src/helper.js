@@ -1,4 +1,4 @@
-export const api_base_url = import.meta.env.VITE_API_URL || "http://localhost:3001";
+export const api_base_url = "http://localhost:3001";
 
 // Better handling of token validation
 export const isTokenValid = () => {
