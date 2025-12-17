@@ -21,7 +21,7 @@ var app = express();
 const mongoose = require('mongoose');
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/full-stack-ide', {
+mongoose.connect('mongodb://127.0.0.1:27017/codeIDE', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
