@@ -142,7 +142,8 @@ const Contact = () => {
                     alt="Profile"
                     className="w-full h-full object-cover transform transition-all duration-700 group-hover:scale-110 filter group-hover:brightness-110"
                     onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/150?text=Profile';
+                      e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23666'%3EProfile%3C/text%3E%3C/svg%3E";
+                      e.target.onerror = null;
                     }}
                   />
                 </div>
