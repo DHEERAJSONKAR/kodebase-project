@@ -78,17 +78,17 @@ const Home = () => {
   };
 
   const languageLogos = {
-    python: "https://images.ctfassets.net/em6l9zw4tzag/oVfiswjNH7DuCb7qGEBPK/b391db3a1d0d3290b96ce7f6aacb32b0/python.png",
-    javascript: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
-    cpp: "https://upload.wikimedia.org/wikipedia/commons/3/32/C%2B%2B_logo.png",
-    c: "https://upload.wikimedia.org/wikipedia/commons/1/19/C_Logo.png",
-    java: "https://static-00.iconduck.com/assets.00/java-icon-1511x2048-6ikx8301.png",
-    bash: "https://w7.pngwing.com/pngs/48/567/png-transparent-bash-shell-script-command-line-interface-z-shell-shell-rectangle-logo-commandline-interface-thumbnail.png",
-    dart: "https://upload.wikimedia.org/wikipedia/commons/c/c6/Dart_logo.png",
-    swift: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Swift_logo.svg",
-    php: "https://www.php.net/images/logos/new-php-logo.svg",
-    go: "https://go.dev/blog/go-brand/Go-Logo/SVG/Go-Logo_Blue.svg",
-    ruby: "https://upload.wikimedia.org/wikipedia/commons/7/73/Ruby_logo.svg"
+    python: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+    javascript: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    cpp: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",
+    c: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg",
+    java: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+    bash: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg",
+    dart: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dart/dart-original.svg",
+    swift: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg",
+    php: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg",
+    go: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg",
+    ruby: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg"
   };
 
   const getRunTimes = async () => {
