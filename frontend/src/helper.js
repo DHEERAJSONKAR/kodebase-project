@@ -1,4 +1,4 @@
-export const api_base_url = "kodebase.vercel.app";
+export const api_base_url = "https://kodebase-project.onrender.com";
 
 // Better handling of token validation
 export const isTokenValid = () => {
